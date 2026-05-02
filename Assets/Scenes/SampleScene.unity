@@ -489,10 +489,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorldManager
   potatoPrefab: {fileID: 711331245897811464, guid: a61f1d76db7cbd842a3af415952f47b8, type: 3}
-  spawnIntervalSeconds: 0.6
+  spawnIntervalSeconds: 0.4
   maxPotatoCount: 20
-  worldMinX: -12
-  worldMaxX: 12
+  worldMinX: -10
+  worldMaxX: 10
   worldMinY: -5
   worldMaxY: 5
   dirtHeightPercent: 0.7
@@ -1309,6 +1309,10 @@ PrefabInstance:
     - target: {fileID: 148915013952623794, guid: 450628ad25c1a264a8104ee50a20938b, type: 3}
       propertyPath: m_Name
       value: MoleNearestToMole
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328312238194527231, guid: 450628ad25c1a264a8104ee50a20938b, type: 3}
+      propertyPath: strategy
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8261288991767298784, guid: 450628ad25c1a264a8104ee50a20938b, type: 3}
       propertyPath: m_LocalPosition.x

@@ -185,8 +185,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -401,8 +401,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -504,6 +504,8 @@ MonoBehaviour:
   potatoPrefab: {fileID: 711331245897811464, guid: a61f1d76db7cbd842a3af415952f47b8, type: 3}
   spawnIntervalSeconds: 1
   maxPotatoCount: 20
+  worldMinX: -8
+  worldMaxX: 8
   worldMinY: -5
   worldMaxY: 5
   dirtHeightPercent: 0.7
@@ -756,7 +758,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 148915013952623794, guid: 450628ad25c1a264a8104ee50a20938b, type: 3}
       propertyPath: m_Name
-      value: Mole 2
+      value: MoleNearestToPlayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328312238194527231, guid: 450628ad25c1a264a8104ee50a20938b, type: 3}
+      propertyPath: strategy
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8261288991767298784, guid: 450628ad25c1a264a8104ee50a20938b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1201,7 +1207,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 148915013952623794, guid: 450628ad25c1a264a8104ee50a20938b, type: 3}
       propertyPath: m_Name
-      value: Mole
+      value: MoleNearestToMole
       objectReference: {fileID: 0}
     - target: {fileID: 8261288991767298784, guid: 450628ad25c1a264a8104ee50a20938b, type: 3}
       propertyPath: m_LocalPosition.x

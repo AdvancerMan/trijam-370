@@ -2,13 +2,30 @@ using UnityEngine;
 
 public class Mole : MonoBehaviour
 {
+    private enum TargetStrategy
+    {
+        NEAREST_TO_MOLE,
+        NEAREST_TO_PLAYER,
+        FURTHEST_FROM_PLAYER
+    }
+
     [SerializeField] private float moveSpeed = 3.5f;
     [SerializeField] private float targetRefreshIntervalSeconds = 0.25f;
     [SerializeField] private float lookRotationOffset = 0f;
     [SerializeField] private float lookRotationLerpSpeed = 12f;
+    [SerializeField] private TargetStrategy strategy = TargetStrategy.NEAREST_TO_MOLE;
+    [SerializeField] private MousePlayer player;
 
     private Potato currentTarget;
     private float targetRefreshTimer;
+
+    private void Awake()
+    {
+        if (player == null)
+        {
+            player = FindAnyObjectByType<MousePlayer>();
+        }
+    }
 
     private void Update()
     {
@@ -16,7 +33,7 @@ public class Mole : MonoBehaviour
         if (currentTarget == null || targetRefreshTimer >= targetRefreshIntervalSeconds)
         {
             targetRefreshTimer = 0f;
-            currentTarget = FindNearestPotato();
+            currentTarget = FindTargetPotato();
         }
 
         if (currentTarget == null)
@@ -27,13 +44,37 @@ public class Mole : MonoBehaviour
         MoveTowardsTarget(currentTarget.transform.position);
     }
 
-    private Potato FindNearestPotato()
+    private Potato FindTargetPotato()
     {
         Potato[] potatoes = FindObjectsByType<Potato>(FindObjectsInactive.Exclude);
-        Potato nearest = null;
-        float nearestDistanceSq = float.MaxValue;
 
-        Vector3 molePosition = transform.position;
+        switch (strategy)
+        {
+            case TargetStrategy.NEAREST_TO_PLAYER:
+                return SelectPotatoByDistance(potatoes, GetPlayerPositionOrFallback(), true);
+            case TargetStrategy.FURTHEST_FROM_PLAYER:
+                return SelectPotatoByDistance(potatoes, GetPlayerPositionOrFallback(), false);
+            case TargetStrategy.NEAREST_TO_MOLE:
+            default:
+                return SelectPotatoByDistance(potatoes, transform.position, true);
+        }
+    }
+
+    private Vector3 GetPlayerPositionOrFallback()
+    {
+        if (player != null)
+        {
+            return player.transform.position;
+        }
+
+        return transform.position;
+    }
+
+    private static Potato SelectPotatoByDistance(Potato[] potatoes, Vector3 referencePosition, bool nearest)
+    {
+        Potato selected = null;
+        float selectedDistanceSq = nearest ? float.MaxValue : float.MinValue;
+
         for (int i = 0; i < potatoes.Length; i++)
         {
             Potato potato = potatoes[i];
@@ -42,16 +83,18 @@ public class Mole : MonoBehaviour
                 continue;
             }
 
-            Vector3 delta = potato.transform.position - molePosition;
+            Vector3 delta = potato.transform.position - referencePosition;
             float distanceSq = delta.sqrMagnitude;
-            if (distanceSq < nearestDistanceSq)
+
+            bool isBetterMatch = nearest ? distanceSq < selectedDistanceSq : distanceSq > selectedDistanceSq;
+            if (isBetterMatch)
             {
-                nearestDistanceSq = distanceSq;
-                nearest = potato;
+                selectedDistanceSq = distanceSq;
+                selected = potato;
             }
         }
 
-        return nearest;
+        return selected;
     }
 
     private void MoveTowardsTarget(Vector3 targetPosition)

@@ -111,8 +111,11 @@ public class MousePlayer : MonoBehaviour
 
         float worldMinY = worldManager.WorldMinY;
         float dirtTopY = worldManager.DirtTopY;
+        float worldMinX = worldManager.WorldMinX;
+        float worldMaxX = worldManager.WorldMaxX;
 
         Vector3 clampedPos = transform.position;
+        clampedPos.x = Mathf.Clamp(clampedPos.x, worldMinX + playerRadius, worldMaxX - playerRadius);
         clampedPos.y = Mathf.Clamp(clampedPos.y, worldMinY + playerRadius, dirtTopY - playerRadius);
         transform.position = clampedPos;
     }

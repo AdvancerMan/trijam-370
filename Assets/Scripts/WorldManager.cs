@@ -8,7 +8,9 @@ public class WorldManager : MonoBehaviour
     [SerializeField] private float spawnIntervalSeconds = 5f;
     [SerializeField] private int maxPotatoCount = 20;
 
-    [Header("World bounds (Y only)")]
+    [Header("World bounds")]
+    [SerializeField] private float worldMinX = -8f;
+    [SerializeField] private float worldMaxX = 8f;
     [SerializeField] private float worldMinY = -5f;
     [SerializeField] private float worldMaxY = 5f;
     [SerializeField] [Range(0f, 1f)] private float dirtHeightPercent = 0.7f;
@@ -24,6 +26,8 @@ public class WorldManager : MonoBehaviour
     private float spawnTimer;
     private int collectedPotatoCount;
 
+    public float WorldMinX => worldMinX;
+    public float WorldMaxX => worldMaxX;
     public float WorldMinY => worldMinY;
     public float WorldMaxY => worldMaxY;
     public float DirtHeightPercent => dirtHeightPercent;
@@ -84,8 +88,8 @@ public class WorldManager : MonoBehaviour
         GameObject potatoInstance = Instantiate(potatoPrefab, new Vector3(0f, 0f, spawnZ), Quaternion.identity, transform);
         Vector2 halfExtents = GetPotatoHalfExtents(potatoInstance);
 
-        float spawnMinX = minX + halfExtents.x;
-        float spawnMaxX = maxX - halfExtents.x;
+        float spawnMinX = Mathf.Max(minX, worldMinX) + halfExtents.x;
+        float spawnMaxX = Mathf.Min(maxX, worldMaxX) - halfExtents.x;
         float spawnMinY = worldMinY + halfExtents.y;
         float spawnMaxY = DirtTopY - halfExtents.y;
 

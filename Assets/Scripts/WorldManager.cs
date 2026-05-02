@@ -171,7 +171,7 @@ public class WorldManager : MonoBehaviour
 
         Transform uiTransform = uiObject.transform;
         float distanceToCamera = Mathf.Abs(mainCamera.transform.position.z - uiTransform.position.z);
-        Vector3 topRightWorld = mainCamera.ViewportToWorldPoint(new Vector3(0.9f, 0.9f, distanceToCamera));
+        Vector3 topRightWorld = mainCamera.ViewportToWorldPoint(new Vector3(0.75f, 0.95f, distanceToCamera));
         uiTransform.position = topRightWorld;
     }
 }

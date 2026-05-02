@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using TMPro;
 
 public class MousePlayer : MonoBehaviour
 {
@@ -13,7 +12,12 @@ public class MousePlayer : MonoBehaviour
     [SerializeField] private float maxStamina = 100f;
     [SerializeField] private float staminaDrainPerSecond = 5f;
     [SerializeField] private float staminaRestorePerPotato = 20f;
-    [SerializeField] private TMP_Text staminaText;
+    [SerializeField] private float damageCooldownSeconds = 1f;
+
+    [Header("Damage visual")]
+    [SerializeField] private SpriteRenderer playerSpriteRenderer;
+    [SerializeField] private Color damageColor = Color.red;
+    [SerializeField] private float damageFlashDuration = 0.35f;
 
     [Header("World references")]
     [SerializeField] private WorldManager worldManager;
@@ -23,11 +27,27 @@ public class MousePlayer : MonoBehaviour
 
     private Camera mainCamera;
     private float currentStamina;
+    private float nextDamageAllowedTime;
+    private float damageFlashTimer;
+    private Color baseSpriteColor = Color.white;
+
+    public float CurrentStamina => currentStamina;
+    public float MaxStamina => maxStamina;
+    public float StaminaPercent => maxStamina > 0f ? currentStamina / maxStamina : 0f;
 
     private void Awake()
     {
         mainCamera = Camera.main;
         currentStamina = maxStamina;
+        if (playerSpriteRenderer == null)
+        {
+            playerSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        }
+
+        if (playerSpriteRenderer != null)
+        {
+            baseSpriteColor = playerSpriteRenderer.color;
+        }
 
         if (worldManager == null)
         {
@@ -38,7 +58,7 @@ public class MousePlayer : MonoBehaviour
     private void Update()
     {
         DrainStamina();
-        UpdateStaminaText();
+        UpdateDamageVisual();
 
         if (currentStamina <= 0f)
         {
@@ -85,14 +105,41 @@ public class MousePlayer : MonoBehaviour
         currentStamina = Mathf.Min(maxStamina, currentStamina + staminaRestorePerPotato);
     }
 
-    private void UpdateStaminaText()
+    public bool TryTakeDamage(float staminaDamage)
     {
-        if (staminaText == null)
+        if (Time.time < nextDamageAllowedTime)
+        {
+            return false;
+        }
+
+        if (staminaDamage <= 0f)
+        {
+            return false;
+        }
+
+        currentStamina = Mathf.Max(0f, currentStamina - staminaDamage);
+        nextDamageAllowedTime = Time.time + damageCooldownSeconds;
+        damageFlashTimer = damageFlashDuration;
+        return true;
+    }
+
+    private void UpdateDamageVisual()
+    {
+        if (playerSpriteRenderer == null)
         {
             return;
         }
 
-        staminaText.text = Mathf.CeilToInt(currentStamina).ToString();
+        if (damageFlashTimer <= 0f || damageFlashDuration <= 0f)
+        {
+            playerSpriteRenderer.color = baseSpriteColor;
+            return;
+        }
+
+        damageFlashTimer = Mathf.Max(0f, damageFlashTimer - Time.deltaTime);
+        float progress = 1f - (damageFlashTimer / damageFlashDuration);
+        float intensity = Mathf.Sin(progress * Mathf.PI);
+        playerSpriteRenderer.color = Color.Lerp(baseSpriteColor, damageColor, intensity);
     }
 
     private void MoveTowardsPointer()

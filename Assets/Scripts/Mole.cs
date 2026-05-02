@@ -13,6 +13,7 @@ public class Mole : MonoBehaviour
     [SerializeField] private float targetRefreshIntervalSeconds = 0.25f;
     [SerializeField] private float lookRotationOffset = 0f;
     [SerializeField] private float lookRotationLerpSpeed = 12f;
+    [SerializeField] private float staminaDamageToPlayer = 15f;
     [SerializeField] private TargetStrategy strategy = TargetStrategy.NEAREST_TO_MOLE;
     [SerializeField] private MousePlayer player;
 
@@ -128,11 +129,13 @@ public class Mole : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         TryDestroyPotato(other.gameObject);
+        TryDamagePlayer(other.gameObject);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         TryDestroyPotato(collision.gameObject);
+        TryDamagePlayer(collision.gameObject);
     }
 
     private void TryDestroyPotato(GameObject otherObject)
@@ -154,5 +157,21 @@ public class Mole : MonoBehaviour
         {
             currentTarget = null;
         }
+    }
+
+    private void TryDamagePlayer(GameObject otherObject)
+    {
+        if (otherObject == null)
+        {
+            return;
+        }
+
+        MousePlayer hitPlayer = otherObject.GetComponentInParent<MousePlayer>();
+        if (hitPlayer == null)
+        {
+            return;
+        }
+
+        hitPlayer.TryTakeDamage(staminaDamageToPlayer);
     }
 }

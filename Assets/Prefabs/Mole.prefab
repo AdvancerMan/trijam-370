@@ -48,6 +48,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Mole
   moveSpeed: 3.5
+  speedIncreaseDelay: 5
+  speedIncreaseDelta: 0.1
   targetRefreshIntervalSeconds: 0.25
   lookRotationOffset: -90
   lookRotationLerpSpeed: 12

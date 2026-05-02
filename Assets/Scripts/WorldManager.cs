@@ -48,7 +48,6 @@ public class WorldManager : MonoBehaviour
     private void Update()
     {
         elapsedTimeSeconds += Time.deltaTime;
-        UpdateUi();
 
         if (potatoPrefab == null || mainCamera == null)
         {
@@ -71,6 +70,11 @@ public class WorldManager : MonoBehaviour
             spawnTimer = 0f;
             SpawnPotato();
         }
+    }
+
+    private void LateUpdate()
+    {
+        UpdateUi();
     }
 
     private void SpawnPotato()

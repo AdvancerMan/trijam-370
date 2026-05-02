@@ -10,6 +10,8 @@ public class Mole : MonoBehaviour
     }
 
     [SerializeField] private float moveSpeed = 3.5f;
+    [SerializeField] private float speedIncreaseDelay = 5f;
+    [SerializeField] private float speedIncreaseDelta = 0f;
     [SerializeField] private float targetRefreshIntervalSeconds = 0.25f;
     [SerializeField] private float lookRotationOffset = 0f;
     [SerializeField] private float lookRotationLerpSpeed = 12f;
@@ -19,6 +21,7 @@ public class Mole : MonoBehaviour
 
     private Potato currentTarget;
     private float targetRefreshTimer;
+    private float speedIncreaseTimer;
 
     private void Awake()
     {
@@ -30,6 +33,8 @@ public class Mole : MonoBehaviour
 
     private void Update()
     {
+        UpdateMoveSpeedGrowth();
+
         targetRefreshTimer += Time.deltaTime;
         if (currentTarget == null || targetRefreshTimer >= targetRefreshIntervalSeconds)
         {
@@ -43,6 +48,21 @@ public class Mole : MonoBehaviour
         }
 
         MoveTowardsTarget(currentTarget.transform.position);
+    }
+
+    private void UpdateMoveSpeedGrowth()
+    {
+        if (speedIncreaseDelay <= 0f || speedIncreaseDelta <= 0f)
+        {
+            return;
+        }
+
+        speedIncreaseTimer += Time.deltaTime;
+        if (speedIncreaseTimer >= speedIncreaseDelay)
+        {
+            speedIncreaseTimer = 0f;
+            moveSpeed += speedIncreaseDelta;
+        }
     }
 
     private Potato FindTargetPotato()

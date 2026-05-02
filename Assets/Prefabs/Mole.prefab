@@ -48,6 +48,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Mole
   moveSpeed: 3.5
   targetRefreshIntervalSeconds: 0.25
+  lookRotationOffset: 0
+  lookRotationLerpSpeed: 12
+  strategy: 0
+  player: {fileID: 0}
 --- !u!61 &8420527553733132491
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -175,7 +179,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
+  m_Sprite: {fileID: -3578019587575532720, guid: 29639c7cad43ed241a4183c8b562a680, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

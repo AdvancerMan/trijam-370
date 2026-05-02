@@ -20,6 +20,11 @@ public class MousePlayer : MonoBehaviour
     [SerializeField] private Color damageColor = Color.red;
     [SerializeField] private float damageFlashDuration = 0.35f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip damageSound;
+    [SerializeField] private AudioClip eatPotatoSound;
+
     [Header("World references")]
     [SerializeField] private WorldManager worldManager;
 
@@ -49,6 +54,17 @@ public class MousePlayer : MonoBehaviour
         if (playerSpriteRenderer != null)
         {
             baseSpriteColor = playerSpriteRenderer.color;
+        }
+
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
+
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
         }
 
         if (worldManager == null)
@@ -122,6 +138,7 @@ public class MousePlayer : MonoBehaviour
         currentStamina = Mathf.Max(0f, currentStamina - staminaDamage);
         nextDamageAllowedTime = Time.time + damageCooldownSeconds;
         damageFlashTimer = damageFlashDuration;
+        PlaySound(damageSound);
         return true;
     }
 
@@ -213,7 +230,18 @@ public class MousePlayer : MonoBehaviour
         }
 
         RestoreStamina();
+        PlaySound(eatPotatoSound);
         worldManager.CollectPotato(otherObject);
+    }
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (audioSource == null || clip == null)
+        {
+            return;
+        }
+
+        audioSource.PlayOneShot(clip);
     }
 
     private void TriggerGameOver()
@@ -230,7 +258,5 @@ public class MousePlayer : MonoBehaviour
             worldManager.TriggerGameOver();
             return;
         }
-
-        SceneManager.LoadScene("GameOver");
     }
 }

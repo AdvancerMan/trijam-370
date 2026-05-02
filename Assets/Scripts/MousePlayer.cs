@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class MousePlayer : MonoBehaviour
 {
@@ -30,6 +31,7 @@ public class MousePlayer : MonoBehaviour
     private float nextDamageAllowedTime;
     private float damageFlashTimer;
     private Color baseSpriteColor = Color.white;
+    private bool gameOverTriggered;
 
     public float CurrentStamina => currentStamina;
     public float MaxStamina => maxStamina;
@@ -62,7 +64,7 @@ public class MousePlayer : MonoBehaviour
 
         if (currentStamina <= 0f)
         {
-            Destroy(gameObject);
+            TriggerGameOver();
             return;
         }
 
@@ -212,5 +214,23 @@ public class MousePlayer : MonoBehaviour
 
         RestoreStamina();
         worldManager.CollectPotato(otherObject);
+    }
+
+    private void TriggerGameOver()
+    {
+        if (gameOverTriggered)
+        {
+            return;
+        }
+
+        gameOverTriggered = true;
+
+        if (worldManager != null)
+        {
+            worldManager.TriggerGameOver();
+            return;
+        }
+
+        SceneManager.LoadScene("GameOver");
     }
 }

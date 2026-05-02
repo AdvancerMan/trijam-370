@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class WorldManager : MonoBehaviour
 {
@@ -24,7 +25,10 @@ public class WorldManager : MonoBehaviour
 
     private Camera mainCamera;
     private float spawnTimer;
+    private float elapsedTimeSeconds;
     private int collectedPotatoCount;
+    private string gameplaySceneName = string.Empty;
+    private bool gameOverTriggered;
 
     public float WorldMinX => worldMinX;
     public float WorldMaxX => worldMaxX;
@@ -33,14 +37,17 @@ public class WorldManager : MonoBehaviour
     public float DirtHeightPercent => dirtHeightPercent;
     public float DirtTopY => worldMinY + (worldMaxY - worldMinY) * dirtHeightPercent;
     public int CollectedPotatoCount => collectedPotatoCount;
+    public float ElapsedTimeSeconds => elapsedTimeSeconds;
 
     private void Awake()
     {
         mainCamera = Camera.main;
+        gameplaySceneName = SceneManager.GetActiveScene().name;
     }
 
     private void Update()
     {
+        elapsedTimeSeconds += Time.deltaTime;
         UpdateUi();
 
         if (potatoPrefab == null || mainCamera == null)
@@ -134,6 +141,20 @@ public class WorldManager : MonoBehaviour
 
         collectedPotatoCount += 1;
         Destroy(potato);
+    }
+
+    public void TriggerGameOver()
+    {
+        if (gameOverTriggered)
+        {
+            return;
+        }
+
+        gameOverTriggered = true;
+        GameSessionData.CollectedPotatoes = collectedPotatoCount;
+        GameSessionData.TimeSpentSeconds = elapsedTimeSeconds;
+        GameSessionData.GameplaySceneName = gameplaySceneName;
+        SceneManager.LoadScene("GameOver");
     }
 
     private void UpdateUi()

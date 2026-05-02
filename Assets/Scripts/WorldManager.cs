@@ -81,11 +81,44 @@ public class WorldManager : MonoBehaviour
             maxX = right.x;
         }
 
-        float randomX = Random.Range(minX, maxX);
-        float randomY = Random.Range(worldMinY, DirtTopY);
-        Vector3 spawnPosition = new Vector3(randomX, randomY, spawnZ);
+        GameObject potatoInstance = Instantiate(potatoPrefab, new Vector3(0f, 0f, spawnZ), Quaternion.identity, transform);
+        Vector2 halfExtents = GetPotatoHalfExtents(potatoInstance);
 
-        Instantiate(potatoPrefab, spawnPosition, Quaternion.identity, transform);
+        float spawnMinX = minX + halfExtents.x;
+        float spawnMaxX = maxX - halfExtents.x;
+        float spawnMinY = worldMinY + halfExtents.y;
+        float spawnMaxY = DirtTopY - halfExtents.y;
+
+        float randomX = GetRandomInRangeOrMidpoint(spawnMinX, spawnMaxX);
+        float randomY = GetRandomInRangeOrMidpoint(spawnMinY, spawnMaxY);
+        potatoInstance.transform.position = new Vector3(randomX, randomY, spawnZ);
+    }
+
+    private static Vector2 GetPotatoHalfExtents(GameObject potatoInstance)
+    {
+        Collider2D collider2D = potatoInstance.GetComponentInChildren<Collider2D>();
+        if (collider2D != null)
+        {
+            return collider2D.bounds.extents;
+        }
+
+        Renderer renderer = potatoInstance.GetComponentInChildren<Renderer>();
+        if (renderer != null)
+        {
+            return renderer.bounds.extents;
+        }
+
+        return Vector2.zero;
+    }
+
+    private static float GetRandomInRangeOrMidpoint(float min, float max)
+    {
+        if (min <= max)
+        {
+            return Random.Range(min, max);
+        }
+
+        return (min + max) * 0.5f;
     }
 
     public void CollectPotato(GameObject potato)

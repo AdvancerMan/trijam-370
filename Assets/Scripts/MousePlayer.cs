@@ -6,6 +6,8 @@ public class MousePlayer : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float lookRotationOffset = 0f;
+    [SerializeField] private float lookRotationLerpSpeed = 12f;
 
     [Header("Stamina")]
     [SerializeField] private float maxStamina = 100f;
@@ -17,8 +19,6 @@ public class MousePlayer : MonoBehaviour
     [SerializeField] private WorldManager worldManager;
 
     [Header("World bounds (visible game area)")]
-    [SerializeField] private float worldMinX = -8f;
-    [SerializeField] private float worldMaxX = 8f;
     [SerializeField] private float playerRadius = 0.5f;
 
     private Camera mainCamera;
@@ -106,22 +106,29 @@ public class MousePlayer : MonoBehaviour
         {
             Vector2 direction = toPointer.normalized;
             transform.position += (Vector3)(direction * moveSpeed * Time.deltaTime);
+            RotateTowards(direction);
         }
 
         float worldMinY = worldManager.WorldMinY;
         float dirtTopY = worldManager.DirtTopY;
 
         Vector3 clampedPos = transform.position;
-        clampedPos.x = Mathf.Clamp(clampedPos.x, worldMinX + playerRadius, worldMaxX - playerRadius);
         clampedPos.y = Mathf.Clamp(clampedPos.y, worldMinY + playerRadius, dirtTopY - playerRadius);
         transform.position = clampedPos;
+    }
+
+    private void RotateTowards(Vector2 direction)
+    {
+        float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + lookRotationOffset;
+        float currentAngle = transform.eulerAngles.z;
+        float smoothedAngle = Mathf.LerpAngle(currentAngle, targetAngle, lookRotationLerpSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Euler(0f, 0f, smoothedAngle);
     }
 
     private void CenterCameraOnPlayer()
     {
         Vector3 cameraPosition = mainCamera.transform.position;
         cameraPosition.x = transform.position.x;
-        cameraPosition.y = transform.position.y;
         mainCamera.transform.position = cameraPosition;
     }
 

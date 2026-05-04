@@ -1,0 +1,31 @@
+---
+description: Unity gameplay scripting style for this project
+globs: Assets/Scripts/**/*.cs
+alwaysApply: false
+---
+
+# Unity Gameplay Iteration
+
+- Implement requested gameplay changes directly in code; prefer small, shippable steps over long planning.
+- Keep behavior configurable with serialized fields (`[SerializeField]`) instead of hardcoded constants.
+- Group serialized fields with meaningful inspector headers (`[Header("...")]`) for readability (example: `Damage visual`).
+- Centralize shared world/game-state values in manager classes; consumers should read from managers, not duplicate config.
+- Preserve current behavior unless explicitly asked to change it; avoid unrelated refactors.
+- Prefer simple, readable MonoBehaviour code (`Update`, clear helper methods) over heavy abstractions.
+- When adding collisions/interactions, guard against double-processing in the same frame.
+- Use smooth transitions for visuals/motion when requested (`Lerp`, `LerpAngle`, timers), with tunable speeds.
+- Keep UI wiring practical: expose references in inspector and fail safely if optional refs are missing.
+
+## Quick Patterns
+
+```csharp
+// ✅ Preferred: tunable gameplay values
+[SerializeField] private float moveSpeed = 5f;
+[SerializeField] private float cooldownSeconds = 1f;
+```
+
+```csharp
+// ✅ Preferred: manager as single source of truth
+float worldMinY = worldManager.WorldMinY;
+float dirtTopY = worldManager.DirtTopY;
+```

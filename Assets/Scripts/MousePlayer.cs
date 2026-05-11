@@ -255,7 +255,7 @@ public class MousePlayer : MonoBehaviour
 
         if (worldManager != null)
         {
-            worldManager.TriggerGameOver();
+            worldManager.DoGameOver();
             return;
         }
     }

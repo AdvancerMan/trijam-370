@@ -25,12 +25,13 @@ Use this skill whenever implementing or adjusting a **finish / game over / level
 
 ## Workflow checklist
 
+- [ ] **Statistics**: Implement statistics tracking in the game: time, score, actions, deaths, etc.
 - [ ] **Trigger**: From gameplay (win or lose), call a single entry point (e.g. manager `TriggerGameOver` / `TriggerLevelComplete`) that sets session data then `SceneManager.LoadScene(finishSceneName)`.
 - [ ] **Session data**: Before loading the finish scene, write all stats the UI will show into a **static** or **ScriptableObject** carrier the finish screen reads in `Start` / `OnEnable`. Avoid relying on destroyed scene objects.
-- [ ] **Statistics**: If the user or design doc does not specify which metrics to show (time, score, actions, deaths, etc.), **ask** which fields to display and where they are produced in gameplay.
-- [ ] **Background**: Reuse the same world sprites, materials, camera clear color, and/or skybox as the main scene so the finish scene visually matches. In this repo, see `Assets/Scenes/GameOver.unity`: world `SpriteRenderer` layers behind UI (`DirtVisual`, `Background`) plus `Main Camera` aligned with gameplay.
+- [ ] **Background**: Reuse the same world sprites, materials, camera clear color, and/or skybox as the main scene so the finish scene visually matches.
 - [ ] **Stat panel**: Add one grouped panel behind stat lines as a **gray square** with **alpha ~0.5** — either a UI `Image` (Unity default white sprite, color RGB gray, A 0.5) stretched behind `TextMeshProUGUI`, or a world-space `SpriteRenderer` square with the same color/alpha.
 - [ ] **Canvas**: Use **Canvas** + **CanvasScaler** + **GraphicRaycaster**; assign the same **Render Camera** as gameplay if using World Space canvas. Include **EventSystem** (and Input System UI module if the project uses the new Input System).
+- [ ] **Title**: Add `Well done!` static text at the top of the stat panel.
 - [ ] **Primary action button**: One button whose onClick loads **either** the stored gameplay scene name (restart / retry) **or** the next level scene name (progression). Expose a `[SerializeField]` fallback scene name if the stored name is empty.
 - [ ] **Build Settings**: Add the finish scene and all target scenes to **File > Build Settings** so `LoadScene` resolves by name.
 
